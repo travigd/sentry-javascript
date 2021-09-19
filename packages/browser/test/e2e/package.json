@@ -1,0 +1,38 @@
+{
+  "name": "sentry-browser-integration-test-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "scripts": {
+    "postinstall": "playwright install --with-deps",
+    "pretest": "yarn install && webpack",
+    "test": "playwright test ./test --browser=all",
+    "posttest": "rimraf dist",
+    "dev": "webpack-dev-server"
+  },
+  "dependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
+    "@playwright/test": "^1.14.1",
+    "@sentry/browser": "file:../..",
+    "babel-loader": "^8.2.2",
+    "express": "^4.17.1",
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0"
+  },
+  "resolutions": {
+    "@sentry/core": "file:../../../core",
+    "@sentry/hub": "file:../../../hub",
+    "@sentry/integrations": "file:../../../integrations",
+    "@sentry/minimal": "file:../../../minimal",
+    "@sentry/tracing": "file:../../../tracing",
+    "@sentry/types": "file:../../../types",
+    "@sentry/utils": "file:../../../utils"
+  }
+}
