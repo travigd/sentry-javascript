@@ -274,6 +274,30 @@ jobs:
             ${{ github.workspace }}/packages/**/*.tgz
             ${{ github.workspace }}/packages/serverless/dist-awslambda-layer/*.zip
 
+  job_playwright_test:
+    name: Playwright E2E Tests
+    needs: job_build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out current commit (${{ github.sha }})
+        uses: actions/checkout@v2
+      - name: Set up Node
+        uses: actions/setup-node@v1
+      - name: Check dependency cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_DEPENDENCY_PATHS }}
+          key: ${{ needs.job_build.outputs.dependency_cache_key }}
+      - name: Check build cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHED_BUILD_PATHS }}
+          key: ${{ env.BUILD_CACHE_KEY }}
+      - name: Run Playwright tests
+        run: |
+          cd packages/browser
+          yarn test:e2e
+
   job_browserstack_test:
     name: BrowserStack
     needs: job_build

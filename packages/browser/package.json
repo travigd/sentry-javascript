@@ -72,7 +72,7 @@
     "fix": "run-s fix:eslint fix:prettier",
     "fix:prettier": "prettier --write \"{src,test}/**/*.ts\"",
     "fix:eslint": "eslint . --format stylish --fix",
-    "test": "run-s test:unit test:e2e",
+    "test": "run-s test:unit",
     "test:unit": "jest --config test/unit/jest.config.js",
     "test:unit:watch": "jest --config test/unit/jest.config.js --watch",
     "test:integration": "test/integration/run.js",
