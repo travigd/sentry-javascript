@@ -8,7 +8,14 @@ import {
   Transport,
   TransportOptions,
 } from '@sentry/types';
-import { dateTimestampInSeconds, logger, parseRetryAfterHeader, PromiseBuffer, SentryError } from '@sentry/utils';
+import {
+  dateTimestampInSeconds,
+  getGlobalObject,
+  logger,
+  parseRetryAfterHeader,
+  PromiseBuffer,
+  SentryError,
+} from '@sentry/utils';
 
 const CATEGORY_MAPPING: {
   [key in SentryRequestType]: string;
@@ -18,6 +25,8 @@ const CATEGORY_MAPPING: {
   session: 'session',
   attachment: 'attachment',
 };
+
+const global = getGlobalObject<Window>();
 
 /** Base Transport class implementation */
 export abstract class BaseTransport implements Transport {
@@ -42,9 +51,9 @@ export abstract class BaseTransport implements Transport {
     // eslint-disable-next-line deprecation/deprecation
     this.url = this._api.getStoreEndpointWithUrlEncodedAuth();
 
-    if (this.options.sendClientReports) {
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') {
+    if (this.options.sendClientReports && global.document) {
+      global.document.addEventListener('visibilitychange', () => {
+        if (global.document.visibilityState === 'hidden') {
           this._flushOutcomes();
         }
       });
@@ -90,7 +99,7 @@ export abstract class BaseTransport implements Transport {
       return;
     }
 
-    if (!navigator || typeof navigator.sendBeacon !== 'function') {
+    if (!global.navigator || typeof global.navigator.sendBeacon !== 'function') {
       logger.warn('Beacon API not available, skipping sending outcomes.');
       return;
     }
@@ -125,7 +134,7 @@ export abstract class BaseTransport implements Transport {
     });
     const envelope = `${envelopeHeader}\n${itemHeaders}\n${item}`;
 
-    navigator.sendBeacon(url, envelope);
+    global.navigator.sendBeacon(url, envelope);
   }
 
   /**
