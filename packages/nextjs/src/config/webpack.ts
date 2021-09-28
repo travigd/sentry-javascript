@@ -3,6 +3,7 @@ import { dropUndefinedKeys, logger } from '@sentry/utils';
 import * as SentryWebpackPlugin from '@sentry/webpack-plugin';
 import * as fs from 'fs';
 import * as path from 'path';
+import { DefinePlugin } from 'webpack';
 
 import {
   BuildContext,
@@ -78,6 +79,21 @@ export function constructWebpackConfigFunction(
       };
     }
 
+    // Support non-default output directories by making the output path (easy to get here at build-time) available to
+    // the SDK's default `RewriteFrames` instance (which needs it at runtime).
+    const distDir = buildContext.config.distDir;
+    newConfig.plugins = newConfig.plugins || [];
+
+    const definePluginInstance = newConfig.plugins.find(
+      plugin => plugin.constructor.name === 'DefinePlugin',
+    ) as DefinePlugin;
+
+    if (definePluginInstance) {
+      definePluginInstance.definitions['__rewriteFramesDistDir__'] = distDir;
+    } else {
+      newConfig.plugins.push(new DefinePlugin({ __rewriteFramesDistDir__: distDir }));
+    }
+
     // Enable the Sentry plugin (which uploads source maps to Sentry when not in dev) by default
     const enableWebpackPlugin = buildContext.isServer
       ? !userNextConfig.sentry?.disableServerWebpackPlugin
@@ -94,7 +110,6 @@ export function constructWebpackConfigFunction(
         newConfig.devtool = 'source-map';
       }
 
-      newConfig.plugins = newConfig.plugins || [];
       newConfig.plugins.push(
         // @ts-ignore Our types for the plugin are messed up somehow - TS wants this to be `SentryWebpackPlugin.default`,
         // but that's not actually a thing

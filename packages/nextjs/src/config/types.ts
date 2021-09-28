@@ -14,6 +14,8 @@ export type NextConfigObject = {
   webpack?: WebpackConfigFunction;
   // whether to build serverless functions for all pages, not just API routes
   target?: 'server' | 'experimental-serverless-trace';
+  // the output directory for the built app (defaults to ".next")
+  distDir?: string;
   sentry?: {
     disableServerWebpackPlugin?: boolean;
     disableClientWebpackPlugin?: boolean;

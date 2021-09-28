@@ -29,7 +29,6 @@ export function init(options: NextjsOptions): void {
   const metadataBuilder = new MetadataBuilder(options, ['nextjs', 'node']);
   metadataBuilder.addSdkMetadata();
   options.environment = options.environment || process.env.NODE_ENV;
-  // TODO capture project root and store in an env var for RewriteFrames?
   addServerIntegrations(options);
   // Right now we only capture frontend sessions for Next.js
   options.autoSessionTracking = false;
@@ -47,7 +46,8 @@ function sdkAlreadyInitialized(): boolean {
   return !!hub.getClient();
 }
 
-const SOURCEMAP_FILENAME_REGEX = /^.*\/\.next\//;
+// webpack will replace this placeholder at build time
+const SOURCEMAP_FILENAME_REGEX = new RegExp('__rewriteFramesDistDir__');
 
 const defaultRewriteFramesIntegration = new RewriteFrames({
   iteratee: frame => {

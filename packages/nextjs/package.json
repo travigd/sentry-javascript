@@ -35,7 +35,8 @@
   },
   "peerDependencies": {
     "next": "^10.0.8 || ^11.0",
-    "react": "15.x || 16.x || 17.x"
+    "react": "15.x || 16.x || 17.x",
+    "webpack": ">= 4.0.0"
   },
   "scripts": {
     "build": "run-p build:esm build:es5",
