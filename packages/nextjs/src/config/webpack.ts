@@ -84,9 +84,7 @@ export function constructWebpackConfigFunction(
     const distDir = buildContext.config.distDir;
     newConfig.plugins = newConfig.plugins || [];
 
-    const definePluginInstance = newConfig.plugins.find(
-      plugin => plugin.constructor.name === 'DefinePlugin',
-    ) as DefinePlugin;
+    const definePluginInstance = findWebpackPlugin(newConfig, 'DefinePlugin') as DefinePlugin;
 
     if (definePluginInstance) {
       definePluginInstance.definitions['__rewriteFramesDistDir__'] = distDir;
