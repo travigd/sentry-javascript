@@ -1,6 +1,6 @@
 import { getSentryRelease } from '@sentry/node';
 import { dropUndefinedKeys, logger } from '@sentry/utils';
-import * as SentryWebpackPlugin from '@sentry/webpack-plugin';
+import { default as SentryWebpackPlugin } from '@sentry/webpack-plugin';
 import * as fs from 'fs';
 import * as path from 'path';
 import { DefinePlugin, WebpackPluginInstance } from 'webpack';
@@ -109,8 +109,6 @@ export function constructWebpackConfigFunction(
       }
 
       newConfig.plugins.push(
-        // @ts-ignore Our types for the plugin are messed up somehow - TS wants this to be `SentryWebpackPlugin.default`,
-        // but that's not actually a thing
         new SentryWebpackPlugin(getWebpackPluginOptions(buildContext, userSentryWebpackPluginOptions)),
       );
     }
