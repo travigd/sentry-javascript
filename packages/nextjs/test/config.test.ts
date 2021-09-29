@@ -9,6 +9,7 @@ import {
   EntryPropertyFunction,
   ExportedNextConfig,
   NextConfigObject,
+  // TODO: remove this once https://github.com/getsentry/sentry-webpack-plugin/pull/314 is released
   SentryWebpackPlugin as SentryWebpackPluginType,
   SentryWebpackPluginOptions,
   WebpackConfigObject,
