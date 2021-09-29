@@ -3,7 +3,7 @@ import { dropUndefinedKeys, logger } from '@sentry/utils';
 import * as SentryWebpackPlugin from '@sentry/webpack-plugin';
 import * as fs from 'fs';
 import * as path from 'path';
-import { DefinePlugin } from 'webpack';
+import { DefinePlugin, WebpackPluginInstance } from 'webpack';
 
 import {
   BuildContext,
@@ -309,4 +309,20 @@ export function getWebpackPluginOptions(
   checkWebpackPluginOverrides(defaultPluginOptions, userPluginOptions);
 
   return { ...defaultPluginOptions, ...userPluginOptions };
+}
+
+/**
+ * Helper function to search through the webpack config object's `plugins` array for a particular plugin.
+ *
+ * Note: Though it's used only once here, this is abstracted into a separate function because it's helpful for tests.
+ *
+ * @param webpackConfig The webpack config in object form
+ * @param pluginName The name of the desired plugin
+ * @returns The instance of the plugin, if it's included in `plugins`, or undefined if it's not
+ */
+export function findWebpackPlugin(
+  webpackConfig: WebpackConfigObject,
+  pluginName: string,
+): WebpackPluginInstance | SentryWebpackPlugin | undefined {
+  return webpackConfig.plugins?.find(plugin => plugin.constructor.name === pluginName);
 }
