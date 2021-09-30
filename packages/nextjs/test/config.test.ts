@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as rimraf from 'rimraf';
+import { DefinePlugin } from 'webpack';
 
 import { withSentryConfig } from '../src/config';
 import {
@@ -324,6 +325,43 @@ describe('webpack config', () => {
           'pages/_app': [clientConfigFilePath, 'next-client-pages-loader?page=%2F_app'],
         }),
       );
+    });
+  });
+
+  describe('`distDir` value in default server-side `RewriteFrames` integration', () => {
+    describe('`DefinePlugin` existence and inclusion of `__rewriteFramesDistDir__` definition', () => {
+      it.each([
+        ['no custom `distDir`, pre-existing `DefinePlugin`', undefined, true],
+        ['no custom `distDir`, no pre-existing `DefinePlugin`', undefined, false],
+        ['custom `distDir`, pre-existing `DefinePlugin`', 'some/output/directory', true],
+        ['custom `distDir`, no pre-existing `DefinePlugin`', 'some/output/directory', false],
+      ])(
+        '%s',
+        async (_testTitle: string, customDistDir: string | undefined, existingDefinePlugin: boolean): Promise<void> => {
+          const mightHaveDistDir = {
+            ...userNextConfig,
+            ...(customDistDir && { distDir: customDistDir }),
+          };
+          const mightHaveDefinePlugin = {
+            ...serverWebpackConfig,
+            ...(existingDefinePlugin && { plugins: [new DefinePlugin({ __dogName__: 'Maisey' })] }),
+          };
+
+          const finalWebpackConfig = await materializeFinalWebpackConfig({
+            userNextConfig: mightHaveDistDir,
+            incomingWebpackConfig: mightHaveDefinePlugin,
+            incomingWebpackBuildContext: getBuildContext('server', mightHaveDistDir),
+          });
+
+          expect(finalWebpackConfig.plugins).toEqual(expect.arrayContaining([expect.any(DefinePlugin)]));
+
+          const definePluginInstance = findWebpackPlugin(finalWebpackConfig, 'DefinePlugin') as DefinePlugin;
+          expect(definePluginInstance.definitions.__rewriteFramesDistDir__).toEqual(customDistDir);
+        },
+      );
+    });
+    describe('`RewriteFrames` ends up with correct `distDir` value', () => {
+      // TODO: this, along with any number of other parts of the build process, should be tested with an integration test
     });
   });
 });
