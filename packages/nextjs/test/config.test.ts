@@ -361,7 +361,9 @@ describe('webpack config', () => {
       );
     });
     describe('`RewriteFrames` ends up with correct `distDir` value', () => {
-      // TODO: this, along with any number of other parts of the build process, should be tested with an integration test
+      // TODO: this, along with any number of other parts of the build process, should be tested with an integration
+      // test (and that integration test should test custom `distDir` values with and without a `.`, to make sure the
+      // regex escaping is working)
     });
   });
 });

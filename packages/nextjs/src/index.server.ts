@@ -1,6 +1,6 @@
 import { RewriteFrames } from '@sentry/integrations';
 import { configureScope, getCurrentHub, init as nodeInit, Integrations } from '@sentry/node';
-import { logger } from '@sentry/utils';
+import { escapeStringForRegex, logger } from '@sentry/utils';
 
 import { instrumentServer } from './utils/instrumentServer';
 import { MetadataBuilder } from './utils/metadataBuilder';
@@ -47,7 +47,7 @@ function sdkAlreadyInitialized(): boolean {
 }
 
 // webpack will replace this placeholder at build time
-const SOURCEMAP_FILENAME_REGEX = new RegExp('__rewriteFramesDistDir__');
+const SOURCEMAP_FILENAME_REGEX = new RegExp(escapeStringForRegex('__rewriteFramesDistDir__'));
 
 const defaultRewriteFramesIntegration = new RewriteFrames({
   iteratee: frame => {
