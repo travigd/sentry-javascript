@@ -20,16 +20,20 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
     // fires (if we don't do this, the lambda will close too early and events will be either delayed or lost)
     // eslint-disable-next-line @typescript-eslint/unbound-method
     res.end = wrapEndMethod(res.end);
+    console.log('wrapped end method');
 
     // use a domain in order to prevent scope bleed between requests
     const local = domain.create();
     local.add(req);
     local.add(res);
+    console.log('local domain created and `req` and `res` added');
 
     // `local.bind` causes everything to run inside a domain, just like `local.run` does, but it also lets the callback
     // return a value. In our case, all any of the codepaths return is a promise of `void`, but nextjs still counts on
     // getting that before it will finish the response.
     const boundHandler = local.bind(async () => {
+      console.log('entering boundHandler');
+
       const currentScope = getCurrentHub().getScope();
 
       if (currentScope) {
@@ -74,6 +78,7 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
       }
 
       try {
+        console.log('just before calling the handler...');
         return await handler(req, res); // Call original handler
       } catch (e) {
         if (currentScope) {
