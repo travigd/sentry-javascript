@@ -81,6 +81,8 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
         console.log('just before calling the handler...');
         return await handler(req, res); // Call original handler
       } catch (e) {
+        console.log('in the catch, currentScope:');
+        console.log({ currentScope });
         if (currentScope) {
           currentScope.addEventProcessor(event => {
             addExceptionMechanism(event, {
@@ -89,7 +91,11 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
             return event;
           });
           captureException(e);
+          console.log('captured error');
+        } else {
+          console.log('did not capture error');
         }
+        console.log('just before throwing in the sdk');
         throw e;
       }
     });
