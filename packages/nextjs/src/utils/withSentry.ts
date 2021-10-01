@@ -83,18 +83,20 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
       } catch (e) {
         console.log('in the catch, currentScope:');
         console.log({ currentScope });
-        if (currentScope) {
-          currentScope.addEventProcessor(event => {
-            addExceptionMechanism(event, {
-              handled: false,
-            });
-            return event;
-          });
-          captureException(e);
-          console.log('captured error');
-        } else {
-          console.log('did not capture error');
-        }
+        // if (currentScope) {
+        //   currentScope.addEventProcessor(event => {
+        //     addExceptionMechanism(event, {
+        //       handled: false,
+        //     });
+        //     return event;
+        //   });
+        //   captureException(e);
+        //   console.log('captured error');
+        // } else {
+        //   console.log('did not capture error');
+        // }
+        console.log('capturing even if theres no scope');
+        captureException(e);
         console.log('just before throwing in the sdk');
         throw e;
       }
