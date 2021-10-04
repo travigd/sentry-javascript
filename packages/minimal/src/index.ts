@@ -42,6 +42,7 @@ export function captureException(exception: any, captureContext?: CaptureContext
   } catch (exception) {
     syntheticException = exception as Error;
   }
+  console.log('@sentry/minimal : captureException');
   return callOnHub('captureException', exception, {
     captureContext,
     originalException: exception,
