@@ -108,6 +108,7 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
         captureException(e);
         // console.log('just before throwing in the sdk');
         console.log('flushing events in withSentry...');
+        console.log('AWS_REGION: ', process.env.AWS_REGION);
         await flush(2000);
         throw e;
       }
