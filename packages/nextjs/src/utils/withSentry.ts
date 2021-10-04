@@ -88,31 +88,41 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
       }
 
       try {
-        // console.log('just before calling the handler...');
-        return await handler(req, res); // Call original handler
-      } catch (e) {
-        //   console.log('in the catch, currentScope:');
-        //   console.log({ currentScope });
-        //   if (currentScope) {
-        //     currentScope.addEventProcessor(event => {
-        //       addExceptionMechanism(event, {
-        //         handled: false,
-        //       });
-        //       return event;
-        //     });
-        //     captureException(e);
-        //     console.log('captured error');
-        //   } else {
-        //     console.log('did not capture error');
-        // }
-        // console.log('capturing even if theres no scope');
-        captureException(e);
-        // console.log('just before throwing in the sdk');
-        console.log('flushing events in withSentry...');
-        console.log('AWS_REGION: ', process.env.AWS_REGION);
-        captureMessage(`AWS: ${process.env.AWS_REGION}`);
+        console.log('outter try');
+        try {
+          console.log('inner try');
+          // console.log('just before calling the handler...');
+          return await handler(req, res); // Call original handler
+        } catch (e) {
+          console.log('inner catch');
+          //   console.log('in the catch, currentScope:');
+          //   console.log({ currentScope });
+          //   if (currentScope) {
+          //     currentScope.addEventProcessor(event => {
+          //       addExceptionMechanism(event, {
+          //         handled: false,
+          //       });
+          //       return event;
+          //     });
+          //     captureException(e);
+          //     console.log('captured error');
+          //   } else {
+          //     console.log('did not capture error');
+          // }
+          // console.log('capturing even if theres no scope');
+          captureException(e);
+          // console.log('just before throwing in the sdk');
+          console.log('flushing events in withSentry...');
+          // console.log('AWS_REGION: ', process.env.AWS_REGION);
+          // captureMessage(`AWS: ${process.env.AWS_REGION}`);
+          await flush(2000);
+          throw e;
+        }
+      } catch (error) {
+        console.log('outter catch');
+        // console.log({ error });
+        captureException(error);
         await flush(2000);
-        throw e;
       }
     });
 
@@ -125,6 +135,8 @@ type WrappedResponseEndMethod = AugmentedResponse['end'];
 
 function wrapEndMethod(origEnd: ResponseEndMethod): WrappedResponseEndMethod {
   return async function newEnd(this: AugmentedResponse, ...args: unknown[]) {
+    console.log('wrapEndMethod');
+
     captureMessage('in the wrap end method');
 
     const transaction = this.__sentryTransaction;
