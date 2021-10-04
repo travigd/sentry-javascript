@@ -23,6 +23,7 @@ export const withSantry = (handler: NextApiHandler): any => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
+  console.log('withSentry');
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   return async (req, res) => {
     // first order of business: monkeypatch `res.end()` so that it will wait for us to send events to sentry before it
