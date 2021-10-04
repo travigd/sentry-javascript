@@ -20,7 +20,7 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
     // fires (if we don't do this, the lambda will close too early and events will be either delayed or lost)
     // eslint-disable-next-line @typescript-eslint/unbound-method
     res.end = wrapEndMethod(res.end);
-    console.log('wrapped end method');
+    // console.log('wrapped end method');
 
     // use a domain in order to prevent scope bleed between requests
     const local = domain.create();
@@ -32,7 +32,7 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
     // return a value. In our case, all any of the codepaths return is a promise of `void`, but nextjs still counts on
     // getting that before it will finish the response.
     const boundHandler = local.bind(async () => {
-      console.log('entering boundHandler');
+      // console.log('entering boundHandler');
 
       const currentScope = getCurrentHub().getScope();
 
@@ -78,7 +78,7 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
       }
 
       try {
-        console.log('just before calling the handler...');
+        // console.log('just before calling the handler...');
         return await handler(req, res); // Call original handler
       } catch (e) {
         //   console.log('in the catch, currentScope:');
@@ -111,7 +111,7 @@ type WrappedResponseEndMethod = AugmentedResponse['end'];
 
 function wrapEndMethod(origEnd: ResponseEndMethod): WrappedResponseEndMethod {
   return async function newEnd(this: AugmentedResponse, ...args: unknown[]) {
-    console.log('in the new end method');
+    // console.log('in the new end method');
     captureMessage('in the wrap end method');
 
     // const transaction = this.__sentryTransaction;
