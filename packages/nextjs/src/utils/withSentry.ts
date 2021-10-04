@@ -95,11 +95,11 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
         // } else {
         //   console.log('did not capture error');
         // }
-        console.log('capturing even if theres no scope');
+        // console.log('capturing even if theres no scope');
         captureException(e);
-        console.log('a');
-        console.log('just before throwing in the sdk');
-        console.log('b');
+        // console.log('a');
+        // console.log('just before throwing in the sdk');
+        // console.log('b');
         throw e;
       }
     });
@@ -113,6 +113,7 @@ type WrappedResponseEndMethod = AugmentedResponse['end'];
 
 function wrapEndMethod(origEnd: ResponseEndMethod): WrappedResponseEndMethod {
   return async function newEnd(this: AugmentedResponse, ...args: unknown[]) {
+    console.log('in the new end method');
     const transaction = this.__sentryTransaction;
 
     if (transaction) {
