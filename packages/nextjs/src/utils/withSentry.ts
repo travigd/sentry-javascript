@@ -1,4 +1,12 @@
-import { captureException, flush, getCurrentHub, Handlers, startTransaction, captureMessage } from '@sentry/node';
+import {
+  captureException,
+  flush,
+  getCurrentHub,
+  Handlers,
+  startTransaction,
+  captureMessage,
+  withScope,
+} from '@sentry/node';
 import { extractTraceparentData, hasTracingEnabled } from '@sentry/tracing';
 import { Transaction } from '@sentry/types';
 import { addExceptionMechanism, isString, logger, stripUrlQueryAndFragment } from '@sentry/utils';
@@ -110,7 +118,10 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
           //     console.log('did not capture error');
           // }
           // console.log('capturing even if theres no scope');
-          captureException(e);
+          withScope(scope => {
+            scope.setTag('order', 'first');
+            captureException(e);
+          });
           // console.log('just before throwing in the sdk');
           console.log('flushing events in withSentry...');
           // console.log('AWS_REGION: ', process.env.AWS_REGION);
@@ -121,7 +132,10 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
       } catch (error) {
         console.log('outter catch');
         // console.log({ error });
-        captureException(error);
+        withScope(scope => {
+          scope.setTag('order', 'second');
+          captureException(error);
+        });
         await flush(2000);
       }
     });
