@@ -26,13 +26,13 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
     const local = domain.create();
     local.add(req);
     local.add(res);
-    console.log('local domain created and `req` and `res` added');
+    // console.log('local domain created and `req` and `res` added');
 
     // `local.bind` causes everything to run inside a domain, just like `local.run` does, but it also lets the callback
     // return a value. In our case, all any of the codepaths return is a promise of `void`, but nextjs still counts on
     // getting that before it will finish the response.
     const boundHandler = local.bind(async () => {
-      console.log('entering boundHandler');
+      // console.log('entering boundHandler');
 
       const currentScope = getCurrentHub().getScope();
 
@@ -81,25 +81,23 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
         console.log('just before calling the handler...');
         return await handler(req, res); // Call original handler
       } catch (e) {
-        console.log('in the catch, currentScope:');
-        console.log({ currentScope });
-        // if (currentScope) {
-        //   currentScope.addEventProcessor(event => {
-        //     addExceptionMechanism(event, {
-        //       handled: false,
+        //   console.log('in the catch, currentScope:');
+        //   console.log({ currentScope });
+        //   if (currentScope) {
+        //     currentScope.addEventProcessor(event => {
+        //       addExceptionMechanism(event, {
+        //         handled: false,
+        //       });
+        //       return event;
         //     });
-        //     return event;
-        //   });
-        //   captureException(e);
-        //   console.log('captured error');
-        // } else {
-        //   console.log('did not capture error');
+        //     captureException(e);
+        //     console.log('captured error');
+        //   } else {
+        //     console.log('did not capture error');
         // }
         // console.log('capturing even if theres no scope');
         captureException(e);
-        // console.log('a');
         // console.log('just before throwing in the sdk');
-        // console.log('b');
         throw e;
       }
     });
@@ -114,31 +112,31 @@ type WrappedResponseEndMethod = AugmentedResponse['end'];
 function wrapEndMethod(origEnd: ResponseEndMethod): WrappedResponseEndMethod {
   return async function newEnd(this: AugmentedResponse, ...args: unknown[]) {
     console.log('in the new end method');
-    const transaction = this.__sentryTransaction;
+    // const transaction = this.__sentryTransaction;
 
-    if (transaction) {
-      transaction.setHttpStatus(this.statusCode);
+    // if (transaction) {
+    //   transaction.setHttpStatus(this.statusCode);
 
-      // Push `transaction.finish` to the next event loop so open spans have a better chance of finishing before the
-      // transaction closes, and make sure to wait until that's done before flushing events
-      const transactionFinished: Promise<void> = new Promise(resolve => {
-        setImmediate(() => {
-          transaction.finish();
-          resolve();
-        });
-      });
-      await transactionFinished;
-    }
+    //   // Push `transaction.finish` to the next event loop so open spans have a better chance of finishing before the
+    //   // transaction closes, and make sure to wait until that's done before flushing events
+    //   const transactionFinished: Promise<void> = new Promise(resolve => {
+    //     setImmediate(() => {
+    //       transaction.finish();
+    //       resolve();
+    //     });
+    //   });
+    //   await transactionFinished;
+    // }
 
-    // flush the event queue to ensure that events get sent to Sentry before the response is finished and the lambda
-    // ends
-    try {
-      logger.log('Flushing events...');
-      await flush(2000);
-      logger.log('Done flushing events');
-    } catch (e) {
-      logger.log(`Error while flushing events:\n${e}`);
-    }
+    // // flush the event queue to ensure that events get sent to Sentry before the response is finished and the lambda
+    // // ends
+    // try {
+    //   logger.log('Flushing events...');
+    //   await flush(2000);
+    //   logger.log('Done flushing events');
+    // } catch (e) {
+    //   logger.log(`Error while flushing events:\n${e}`);
+    // }
 
     return origEnd.call(this, ...args);
   };
