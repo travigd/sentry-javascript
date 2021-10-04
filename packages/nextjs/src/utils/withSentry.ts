@@ -12,6 +12,15 @@ type WrappedNextApiHandler = NextApiHandler;
 
 type AugmentedResponse = NextApiResponse & { __sentryTransaction?: Transaction };
 
+export const withSantry = (handler: NextApiHandler): any => {
+  try {
+    console.log('withSantry');
+    return withSentry(handler);
+  } catch (error) {
+    captureException(error);
+  }
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
