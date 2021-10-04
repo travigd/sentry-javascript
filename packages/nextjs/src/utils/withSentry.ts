@@ -1,4 +1,4 @@
-import { captureException, flush, getCurrentHub, Handlers, startTransaction } from '@sentry/node';
+import { captureException, flush, getCurrentHub, Handlers, startTransaction, captureMessage } from '@sentry/node';
 import { extractTraceparentData, hasTracingEnabled } from '@sentry/tracing';
 import { Transaction } from '@sentry/types';
 import { addExceptionMechanism, isString, logger, stripUrlQueryAndFragment } from '@sentry/utils';
@@ -112,6 +112,8 @@ type WrappedResponseEndMethod = AugmentedResponse['end'];
 function wrapEndMethod(origEnd: ResponseEndMethod): WrappedResponseEndMethod {
   return async function newEnd(this: AugmentedResponse, ...args: unknown[]) {
     console.log('in the new end method');
+    captureMessage('in the wrap end method');
+
     // const transaction = this.__sentryTransaction;
 
     // if (transaction) {
