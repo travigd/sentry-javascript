@@ -25,6 +25,9 @@ export const withSantry = (handler: NextApiHandler): any => {
 export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   return async (req, res) => {
+    captureMessage(`server: ${req.server.timeout}`);
+    captureMessage(`client: ${req.client.timeout}`);
+
     // first order of business: monkeypatch `res.end()` so that it will wait for us to send events to sentry before it
     // fires (if we don't do this, the lambda will close too early and events will be either delayed or lost)
     // eslint-disable-next-line @typescript-eslint/unbound-method
