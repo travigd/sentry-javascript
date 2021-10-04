@@ -97,7 +97,9 @@ export const withSentry = (handler: NextApiHandler): WrappedNextApiHandler => {
         // }
         console.log('capturing even if theres no scope');
         captureException(e);
+        console.log('a');
         console.log('just before throwing in the sdk');
+        console.log('b');
         throw e;
       }
     });
