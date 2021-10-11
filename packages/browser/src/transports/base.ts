@@ -17,6 +17,8 @@ import {
   SentryError,
 } from '@sentry/utils';
 
+import { sendReport } from './utils';
+
 const CATEGORY_MAPPING: {
   [key in SentryRequestType]: string;
 } = {
@@ -99,11 +101,6 @@ export abstract class BaseTransport implements Transport {
       return;
     }
 
-    if (!global.navigator || typeof global.navigator.sendBeacon !== 'function') {
-      logger.warn('Beacon API not available, skipping sending outcomes.');
-      return;
-    }
-
     const outcomes = this._outcomes;
     this._outcomes = {};
 
@@ -117,7 +114,7 @@ export abstract class BaseTransport implements Transport {
 
     const url = this._api.getEnvelopeEndpointWithUrlEncodedAuth();
     // Envelope header is required to be at least an empty object
-    const envelopeHeader = JSON.stringify({});
+    const envelopeHeader = JSON.stringify({ ...(this.options.tunnel && { dsn: this._api.getDsn().toString() }) });
     const itemHeaders = JSON.stringify({
       type: 'client_report',
     });
@@ -134,7 +131,11 @@ export abstract class BaseTransport implements Transport {
     });
     const envelope = `${envelopeHeader}\n${itemHeaders}\n${item}`;
 
-    global.navigator.sendBeacon(url, envelope);
+    try {
+      sendReport(url, envelope);
+    } catch (e) {
+      logger.error(e);
+    }
   }
 
   /**
