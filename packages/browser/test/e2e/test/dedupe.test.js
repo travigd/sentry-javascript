@@ -10,8 +10,9 @@ test.describe('Dedupe Integration', () => {
 
   test(`doesn't drop message event if it has a different message from previous`, async ({ page }) => {
     const browserEvents = await getSentryEvents(page, () => {
-      Sentry.captureMessage('test_0');
-      Sentry.captureMessage('test_1');
+      [0, 1].forEach(idx => {
+        Sentry.captureMessage(`test_${idx}`);
+      });
     });
 
     expect(browserEvents).toHaveLength(2);
@@ -19,28 +20,31 @@ test.describe('Dedupe Integration', () => {
 
   test('drops duplicate event if it has the same message as previous', async ({ page }) => {
     const browserEvents = await getSentryEvents(page, () => {
-      Sentry.captureMessage('test');
-      Sentry.captureMessage('test');
+      [0, 1].forEach(() => {
+        Sentry.captureMessage('test');
+      });
     });
 
     expect(browserEvents).toHaveLength(1);
   });
 
-  test(`doesn't drop separately thrown exceptions of the same type and message`, async ({ page }) => {
+  test(`drops separately thrown exceptions of the same type and message`, async ({ page }) => {
     const browserEvents = await getSentryEvents(page, () => {
-      Sentry.captureException(Error('test'));
-      Sentry.captureException(Error('test'));
+      [0, 1].forEach(() => {
+        Sentry.captureException(Error('test'));
+      });
     });
 
-    expect(browserEvents).toHaveLength(2);
+    expect(browserEvents).toHaveLength(1);
   });
 
   test('drops duplicate exception if it has the same fingerprint as previous', async ({ page }) => {
     const browserEvents = await getSentryEvents(page, () => {
       const testError = Error('test');
 
-      Sentry.captureException(testError);
-      Sentry.captureException(testError);
+      [0, 1].forEach(() => {
+        Sentry.captureException(testError);
+      });
     });
 
     expect(browserEvents).toHaveLength(1);
@@ -50,8 +54,9 @@ test.describe('Dedupe Integration', () => {
     const browserEvents = await getSentryEvents(page, () => {
       const testError = Error('test');
 
-      Sentry.captureException(testError, { fingerprint: '0' });
-      Sentry.captureException(testError, { fingerprint: '1' });
+      [0, 1].forEach(idx => {
+        Sentry.captureException(testError, { fingerprint: idx });
+      });
     });
 
     expect(browserEvents).toHaveLength(2);
