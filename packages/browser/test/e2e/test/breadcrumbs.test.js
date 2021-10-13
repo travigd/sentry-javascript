@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const Sentry = require('@sentry/browser');
 
-const { waitForXHR, getSentryRequest, getSentryEvents } = require('./utils/helpers');
+const { waitForXHR, getSentryRequest } = require('./utils/helpers');
 
 test.describe('Breadcrumbs', () => {
   test.beforeEach(async ({ baseURL, page }) => {
@@ -453,6 +453,8 @@ test.describe('Breadcrumbs', () => {
         input.addEventListener('keypress');
 
         input.dispatchEvent(keypress);
+
+        // eslint-disable-next-line no-undef
         foo(); // throw exception
       },
       { foo: undefined },
