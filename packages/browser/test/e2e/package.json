@@ -22,7 +22,7 @@
   "dependencies": {
     "@babel/core": "^7.15.5",
     "@babel/preset-env": "^7.15.4",
-    "@playwright/test": "^1.14.1",
+    "@playwright/test": "1.17.0-next-alpha-nov-5-2021",
     "@sentry/browser": "file:../..",
     "babel-loader": "^8.2.2",
     "express": "^4.17.1",
