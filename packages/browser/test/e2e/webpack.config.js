@@ -16,7 +16,7 @@ module.exports = {
     extensions: ['*', '.js'],
   },
   output: {
-    path: __dirname + '/dist',
+    path: `${__dirname}/dist`,
     filename: 'bundle.js',
   },
   devServer: {
