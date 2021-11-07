@@ -13,8 +13,8 @@
     ]
   },
   "scripts": {
-    "postinstall": "playwright install --with-deps && yarn install --no-lockfile",
-    "pretest": "webpack",
+    "postinstall": "playwright install --with-deps",
+    "pretest": "yarn install && webpack",
     "test": "playwright test ./test --browser=all",
     "posttest": "rimraf dist",
     "dev": "webpack-dev-server"
