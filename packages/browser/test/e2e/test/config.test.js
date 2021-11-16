@@ -33,7 +33,7 @@ test.describe('config', () => {
        *
        * foo.js is denied in the `init` call (init.js), thus we filter it
        * */
-      var urlWithDeniedUrl = new Error('filter');
+      const urlWithDeniedUrl = new Error('filter');
       urlWithDeniedUrl.stack =
         'Error: bar\n' +
         ' at http://localhost:5000/foo.js:7:19\n' +
@@ -47,7 +47,7 @@ test.describe('config', () => {
        *
        * foo-pass.js is *not* denied in the `init` call (init.js), thus we don't filter it
        * */
-      var urlWithoutDeniedUrl = new Error('pass');
+      const urlWithoutDeniedUrl = new Error('pass');
       urlWithoutDeniedUrl.stack =
         'Error: bar\n' +
         ' at http://localhost:5000/foo-pass.js:7:19\n' +

@@ -13,7 +13,7 @@ function waitForXHR(xhr, cb) {
 async function setGlobals(page, globals = {}) {
   for (const [globalName, globalVal] of Object.entries(globals)) {
     // Only need to pass a function for the PoC, so, we'll probably need to improve this to support other global types.
-    await page.addScriptTag({ content: `var ${globalName} = ${globalVal};` });
+    await page.addScriptTag({ content: `let ${globalName} = ${globalVal};` });
   }
 }
 

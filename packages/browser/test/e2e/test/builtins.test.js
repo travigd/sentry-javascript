@@ -10,7 +10,7 @@ test.describe('wrapped built-ins', () => {
 
   test('should capture exceptions from event listeners', async ({ page }) => {
     const eventData = await getSentryEvents(page, () => {
-      var div = document.createElement('div');
+      const div = document.createElement('div');
       document.body.appendChild(div);
       div.addEventListener(
         'click',
@@ -23,7 +23,7 @@ test.describe('wrapped built-ins', () => {
         false,
       );
 
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       div.dispatchEvent(click);
     });
 
@@ -35,13 +35,13 @@ test.describe('wrapped built-ins', () => {
 
   test('should transparently remove event listeners from wrapped functions', async ({ page }) => {
     const eventData = await getSentryEvents(page, () => {
-      var div = document.createElement('div');
+      const div = document.createElement('div');
       document.body.appendChild(div);
-      var fooFn = function() {
+      const fooFn = function() {
         // eslint-disable-next-line no-undef
         foo();
       };
-      var barFn = function() {
+      const barFn = function() {
         // eslint-disable-next-line no-undef
         bar();
       };
@@ -58,10 +58,10 @@ test.describe('wrapped built-ins', () => {
     page,
   }) => {
     await getSentryEvents(page, () => {
-      var div = document.createElement('div');
+      const div = document.createElement('div');
       document.body.appendChild(div);
       window.capturedCall = false;
-      var captureFn = function() {
+      const captureFn = function() {
         window.capturedCall = true;
       };
       // Use original addEventListener to simulate non-wrapped behavior (callback is attached without __sentry_wrapped__)
@@ -90,7 +90,7 @@ test.describe('wrapped built-ins', () => {
 
   test('should capture exceptions inside setInterval', async ({ page }) => {
     const eventData = await getSentryEvents(page, () => {
-      var exceptionInterval = setInterval(function() {
+      const exceptionInterval = setInterval(function() {
         clearInterval(exceptionInterval);
         // eslint-disable-next-line no-undef
         foo();
@@ -146,9 +146,9 @@ test.describe('wrapped built-ins', () => {
       // Note: Using `getSentryRequest` here as it waits for the callback inside `requestAnimationFrame` by default.
       await getSentryRequest(page, () => {
         // TypeScript-transpiled class syntax
-        var Foo = (function() {
+        const Foo = (function() {
           function Foo() {
-            var _this = this;
+            const _this = this;
             this.magicNumber = 42;
             this.getThis = function() {
               window.capturedCtx = _this;
@@ -158,7 +158,7 @@ test.describe('wrapped built-ins', () => {
           }
           return Foo;
         })();
-        var foo = new Foo();
+        const foo = new Foo();
         requestAnimationFrame(foo.getThis);
       });
 
@@ -190,7 +190,7 @@ test.describe('wrapped built-ins', () => {
   test('should capture exceptions from XMLHttpRequest event handlers (e.g. onreadystatechange)', async ({ page }) => {
     // Note: Using `getSentryRequest` here as it waits for the callback inside `requestAnimationFrame` by default.
     const requestData = await getSentryRequest(page, () => {
-      var xhr = new XMLHttpRequest();
+      const xhr = new XMLHttpRequest();
       xhr.open('GET', '/base/subjects/example.json');
       // intentionally assign event handlers *after* open, since this is what jQuery does
       xhr.onreadystatechange = function wat() {
@@ -219,7 +219,7 @@ test.describe('wrapped built-ins', () => {
     // Note: Using `getSentryRequest` here as it waits for the callback inside `requestAnimationFrame` by default.
     await getSentryRequest(page, () => {
       window.calls = {};
-      var xhr = new XMLHttpRequest();
+      const xhr = new XMLHttpRequest();
       xhr.open('GET', '/base/subjects/example.json');
       xhr.onreadystatechange = function wat() {
         window.calls[xhr.readyState] = window.calls[xhr.readyState] ? window.calls[xhr.readyState] + 1 : 1;
@@ -262,7 +262,7 @@ test.describe('wrapped built-ins', () => {
 
   test(`should capture built-in's handlers fn name in mechanism data`, async ({ page }) => {
     const requestData = await getSentryRequest(page, () => {
-      var div = document.createElement('div');
+      const div = document.createElement('div');
       document.body.appendChild(div);
       div.addEventListener(
         'click',
@@ -272,7 +272,7 @@ test.describe('wrapped built-ins', () => {
         },
         false,
       );
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       div.dispatchEvent(click);
     });
 
@@ -293,7 +293,7 @@ test.describe('wrapped built-ins', () => {
 
   test(`should fallback to <anonymous> fn name in mechanism data if one is unavailable`, async ({ page }) => {
     const requestData = await getSentryRequest(page, () => {
-      var div = document.createElement('div');
+      const div = document.createElement('div');
       document.body.appendChild(div);
       div.addEventListener(
         'click',
@@ -303,7 +303,7 @@ test.describe('wrapped built-ins', () => {
         },
         false,
       );
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       div.dispatchEvent(click);
     });
 

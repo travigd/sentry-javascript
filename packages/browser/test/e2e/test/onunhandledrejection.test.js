@@ -144,7 +144,7 @@ test.describe('window.onunhandledrejection', () => {
 
     if (supportsOnunhandledrejection) {
       const eventData = await getSentryEvents(page, () => {
-        var a = {
+        const a = {
           a: '1'.repeat('100'),
           b: '2'.repeat('100'),
           c: '3'.repeat('100'),

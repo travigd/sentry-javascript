@@ -174,10 +174,10 @@ test.describe('Breadcrumbs', () => {
 
   test('should provide a hint for dom events that includes event name and event itself', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.getElementsByTagName('input')[0];
-      var clickHandler = function() {};
+      const input = document.getElementsByTagName('input')[0];
+      const clickHandler = function() {};
       input.addEventListener('click', clickHandler);
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       input.dispatchEvent(click);
       Sentry.captureMessage('test');
     });
@@ -189,14 +189,14 @@ test.describe('Breadcrumbs', () => {
 
   test('should not fail with click or keypress handler with no callback', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
       input.addEventListener('click', undefined);
       input.addEventListener('keypress', undefined);
 
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       input.dispatchEvent(click);
 
-      var keypress = new KeyboardEvent('keypress');
+      const keypress = new KeyboardEvent('keypress');
       input.dispatchEvent(keypress);
 
       Sentry.captureMessage('test');
@@ -212,12 +212,12 @@ test.describe('Breadcrumbs', () => {
 
   test('should not fail with custom event', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
       input.addEventListener('build', function(evt) {
         evt.stopPropagation();
       });
 
-      var customEvent = new CustomEvent('build', { detail: 1 });
+      const customEvent = new CustomEvent('build', { detail: 1 });
       input.dispatchEvent(customEvent);
 
       Sentry.captureMessage('test');
@@ -229,10 +229,10 @@ test.describe('Breadcrumbs', () => {
 
   test('should not fail with custom event and handler with no callback', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
       input.addEventListener('build', undefined);
 
-      var customEvent = new CustomEvent('build', { detail: 1 });
+      const customEvent = new CustomEvent('build', { detail: 1 });
       input.dispatchEvent(customEvent);
 
       Sentry.captureMessage('test');
@@ -247,14 +247,14 @@ test.describe('Breadcrumbs', () => {
       // add an event listener to the input. we want to make sure that
       // our breadcrumbs still work even if the page has an event listener
       // on an element that cancels event bubbling
-      var input = document.getElementsByTagName('input')[0];
-      var clickHandler = function(evt) {
+      const input = document.getElementsByTagName('input')[0];
+      const clickHandler = function(evt) {
         evt.stopPropagation(); // don't bubble
       };
       input.addEventListener('click', clickHandler);
 
       // click <input/>
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       input.dispatchEvent(click);
 
       Sentry.captureMessage('test');
@@ -271,9 +271,9 @@ test.describe('Breadcrumbs', () => {
   test('should record a mouse click on element WITHOUT click handler present', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
       // click <input/>
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
 
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
 
       // TODO: This next line wasn't required for the old tests.
       input.addEventListener('click');
@@ -291,7 +291,7 @@ test.describe('Breadcrumbs', () => {
 
   test('should only record a SINGLE mouse click for a tree of elements with event listeners', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
-      var clickHandler = function() {};
+      const clickHandler = function() {};
 
       // mousemove event shouldnt clobber subsequent "breadcrumbed" events (see #724)
       document.querySelector('.a').addEventListener('mousemove', clickHandler);
@@ -301,8 +301,8 @@ test.describe('Breadcrumbs', () => {
       document.querySelector('.c').addEventListener('click', clickHandler);
 
       // click <input/>
-      var click = new MouseEvent('click');
-      var input = document.querySelector('.a'); // leaf node
+      const click = new MouseEvent('click');
+      const input = document.querySelector('.a'); // leaf node
       input.dispatchEvent(click);
 
       Sentry.captureMessage('test');
@@ -317,13 +317,13 @@ test.describe('Breadcrumbs', () => {
   test('should bail out if accessing the `target` property of an event throws an exception', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
       // click <input/>
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       function kaboom() {
         throw new Error('lol');
       }
       Object.defineProperty(click, 'target', { get: kaboom });
 
-      var input = document.querySelector('.a'); // leaf node
+      const input = document.querySelector('.a'); // leaf node
       input.addEventListener('click');
       input.dispatchEvent(click);
 
@@ -339,10 +339,10 @@ test.describe('Breadcrumbs', () => {
   test('should record consecutive keypress events into a single "input" breadcrumb', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
       // keypress <input/> twice
-      var keypress1 = new KeyboardEvent('keypress');
-      var keypress2 = new KeyboardEvent('keypress');
+      const keypress1 = new KeyboardEvent('keypress');
+      const keypress2 = new KeyboardEvent('keypress');
 
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
       input.addEventListener('keypress');
 
       input.dispatchEvent(keypress1);
@@ -359,11 +359,11 @@ test.describe('Breadcrumbs', () => {
 
   test('should correctly capture multiple consecutive breadcrumbs if they are of different type', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
 
-      var clickHandler = function() {};
+      const clickHandler = function() {};
       input.addEventListener('click', clickHandler);
-      var keypressHandler = function() {};
+      const keypressHandler = function() {};
       input.addEventListener('keypress', keypressHandler);
 
       input.dispatchEvent(new MouseEvent('click'));
@@ -387,11 +387,11 @@ test.describe('Breadcrumbs', () => {
     page,
   }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
 
-      var clickHandler = function() {};
+      const clickHandler = function() {};
       input.addEventListener('click', clickHandler);
-      var keypressHandler = function() {};
+      const keypressHandler = function() {};
       input.addEventListener('keypress', keypressHandler);
 
       input.dispatchEvent(new MouseEvent('click'));
@@ -419,10 +419,10 @@ test.describe('Breadcrumbs', () => {
     page,
   }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.querySelector('#foo-form input');
-      var div = document.querySelector('#foo-form div');
+      const input = document.querySelector('#foo-form input');
+      const div = document.querySelector('#foo-form div');
 
-      var clickHandler = function() {};
+      const clickHandler = function() {};
       input.addEventListener('click', clickHandler);
       div.addEventListener('click', clickHandler);
 
@@ -448,8 +448,8 @@ test.describe('Breadcrumbs', () => {
       page,
       () => {
         // keypress <input/>
-        var keypress = new KeyboardEvent('keypress');
-        var input = document.getElementsByTagName('input')[0];
+        const keypress = new KeyboardEvent('keypress');
+        const input = document.getElementsByTagName('input')[0];
         input.addEventListener('keypress');
 
         input.dispatchEvent(keypress);
@@ -468,13 +468,13 @@ test.describe('Breadcrumbs', () => {
   test('should flush keypress breadcrumb when input event occurs immediately after', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
       // 1st keypress <input/>
-      var keypress1 = new KeyboardEvent('keypress');
+      const keypress1 = new KeyboardEvent('keypress');
       // click <input/>
-      var click = new MouseEvent('click');
+      const click = new MouseEvent('click');
       // 2nd keypress
-      var keypress2 = new KeyboardEvent('keypress');
+      const keypress2 = new KeyboardEvent('keypress');
 
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
       input.addEventListener('keypress');
       input.addEventListener('click');
 
@@ -500,10 +500,10 @@ test.describe('Breadcrumbs', () => {
   }) => {
     const eventData = await getSentryRequest(page, () => {
       // keypress <input/> twice
-      var keypress1 = new KeyboardEvent('keypress');
-      var keypress2 = new KeyboardEvent('keypress');
+      const keypress1 = new KeyboardEvent('keypress');
+      const keypress2 = new KeyboardEvent('keypress');
 
-      var div = document.querySelector('[contenteditable]');
+      const div = document.querySelector('[contenteditable]');
       div.addEventListener('keypress');
 
       div.dispatchEvent(keypress1);
@@ -524,7 +524,7 @@ test.describe('Breadcrumbs', () => {
     const eventData = await getSentryRequest(page, () => {
       window.handleEventCalled = false;
 
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
       input.addEventListener('click', {
         handleEvent: function() {
           window.handleEventCalled = true;
@@ -544,17 +544,17 @@ test.describe('Breadcrumbs', () => {
   // TODO: Check why this is failing.
   test.skip('should remove breadcrumb instrumentation when all event listeners are detached', async ({ page }) => {
     const eventData = await getSentryRequest(page, () => {
-      var input = document.getElementsByTagName('input')[0];
+      const input = document.getElementsByTagName('input')[0];
 
-      var clickHandler = function() {};
-      var otherClickHandler = function() {};
+      const clickHandler = function() {};
+      const otherClickHandler = function() {};
       input.addEventListener('click', clickHandler);
       input.addEventListener('click', otherClickHandler);
       input.removeEventListener('click', clickHandler);
       input.removeEventListener('click', otherClickHandler);
 
-      var keypressHandler = function() {};
-      var otherKeypressHandler = function() {};
+      const keypressHandler = function() {};
+      const otherKeypressHandler = function() {};
       input.addEventListener('keypress', keypressHandler);
       input.addEventListener('keypress', otherKeypressHandler);
       input.removeEventListener('keypress', keypressHandler);
