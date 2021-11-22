@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 
 import test from '../utils/fixtures';
-import { getSentryRequest, injectScriptAndGetEvents } from '../utils/helpers';
+import { injectScriptAndGetEvents } from '../utils/helpers';
 
 // Fixme: Globally thrown errors crashes Chrome and Webkit pages.
 test.describe('Capture', () => {
