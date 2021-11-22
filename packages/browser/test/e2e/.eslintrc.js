@@ -1,9 +1,4 @@
 module.exports = {
-  ecmaFeatures: {
-    modules: true,
-    spread: true,
-    restParams: true,
-  },
   env: {
     browser: true,
     node: true,
@@ -12,5 +7,5 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  extends: ['../../.eslintrc.js'],
+  extends: ['../../.eslintrc.js', 'plugin:playwright/playwright-test'],
 };
