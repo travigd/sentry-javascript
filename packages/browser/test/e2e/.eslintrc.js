@@ -1,6 +1,6 @@
 module.exports = {
   ecmaFeatures: {
-    '1modules': true,
+    modules: true,
     spread: true,
     restParams: true,
   },
@@ -8,10 +8,6 @@ module.exports = {
     browser: true,
     node: true,
     es6: true,
-  },
-  rules: {
-    'no-unused-vars': 2,
-    'no-undef': 2,
   },
   parserOptions: {
     sourceType: 'module',
