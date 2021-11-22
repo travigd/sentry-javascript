@@ -1,0 +1,3 @@
+requestAnimationFrame(function() {
+  foo();
+});
