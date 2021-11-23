@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   env: {
     browser: true,
     node: true,
@@ -7,6 +8,6 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  extends: ['../../.eslintrc.js'],
+  extends: ['../../.eslintrc.js', 'plugin:import/typescript'],
   ignorePatterns: ['scenarios/**'],
 };
