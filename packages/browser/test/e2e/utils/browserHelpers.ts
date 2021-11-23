@@ -1,5 +1,5 @@
 export function waitForXHR(xhr: { readyState: number }, cb: () => unknown): unknown {
-  if (xhr.readyState === 4) {
+  if (xhr.readyState === XMLHttpRequest.DONE) {
     return cb();
   }
 
