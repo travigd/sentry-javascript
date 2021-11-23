@@ -7,5 +7,6 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  extends: ['../../.eslintrc.js', 'plugin:playwright/playwright-test'],
+  extends: ['../../.eslintrc.js'],
+  ignorePatterns: ['scenarios/**'],
 };
