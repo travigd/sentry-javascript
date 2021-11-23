@@ -15,7 +15,7 @@
   "scripts": {
     "postinstall": "playwright install --with-deps",
     "pretest": "yarn install",
-    "test": "playwright test ./test --browser='all'",
+    "test": "playwright test ./test --browser='all' --reporter='line'",
     "posttest": "rimraf dist"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "babel-loader": "^8.2.2",
     "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^5.5.0",
+    "playwright": "^1.16.3",
     "ts-loader": "^9.2.6",
     "webpack": "^5.52.0"
   },
