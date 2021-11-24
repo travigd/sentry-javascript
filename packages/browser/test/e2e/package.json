@@ -7,11 +7,6 @@
     "node": ">=12"
   },
   "private": true,
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
-  },
   "scripts": {
     "install-browsers": "playwright install --with-deps",
     "pretest": "yarn install && yarn install-browsers",
@@ -19,14 +14,13 @@
     "posttest": "rimraf dist"
   },
   "dependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.4",
     "@playwright/test": "1.17.0-next-alpha-nov-5-2021",
     "@sentry/browser": "file:../..",
     "babel-loader": "^8.2.2",
     "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^5.5.0",
     "ts-loader": "^9.2.6",
+    "typescript": "^4.5.2",
     "webpack": "^5.52.0"
   },
   "resolutions": {
