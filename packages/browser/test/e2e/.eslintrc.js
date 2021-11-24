@@ -8,6 +8,11 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  extends: ['../../.eslintrc.js', 'plugin:import/typescript'],
+  // This rule gives false positives on GH Actions.
+  // Ref: https://github.com/import-js/eslint-plugin-import/issues/1037
+  rules: {
+    'import/no-unresolved': 'off',
+  },
+  extends: ['../../.eslintrc.js'],
   ignorePatterns: ['scenarios/**'],
 };
