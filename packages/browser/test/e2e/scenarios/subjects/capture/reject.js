@@ -1,1 +1,0 @@
-Promise.reject('Sentry Test');

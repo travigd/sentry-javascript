@@ -5,14 +5,17 @@ import webpack from 'webpack';
 
 import webpackConfig from '../webpack.config';
 
-const scenariosPath = path.resolve(__dirname, '../scenarios');
-const initializationsPath = `${scenariosPath}/initializations`;
-const subjectsPath = `${scenariosPath}/subjects`;
-const templatesPath = `${scenariosPath}/templates`;
+export async function generatePage(
+  initialization: string,
+  subject: string,
+  template: string,
+  outPath: string,
+): Promise<void> {
+  const localPath = `${path.resolve(__dirname, '..')}/${outPath}/dist`;
+  const initializationPath = `${path.resolve(__dirname, '..')}/${initialization}`;
+  const subjectPath = `${path.resolve(__dirname, '..')}/${subject}`;
+  const templatePath = `${path.resolve(__dirname, '..')}/${template}`;
 
-export async function generatePage(initialization: string, subject: string, template: string): Promise<void> {
-  const internalPath = `${initialization}/${subject}/${template}`;
-  const localPath = `${path.resolve(__dirname, '../dist')}/${internalPath}`;
   const bundlePath = `${localPath}/index.html`;
 
   if (!existsSync(localPath)) {
@@ -20,12 +23,12 @@ export async function generatePage(initialization: string, subject: string, temp
   }
 
   if (!existsSync(bundlePath)) {
-    await new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       webpack(
         webpackConfig({
           entry: {
-            initialization: `${initializationsPath}/${initialization}`,
-            subject: `${subjectsPath}/${subject}`,
+            initialization: initializationPath,
+            subject: subjectPath,
           },
           output: {
             path: localPath,
@@ -34,7 +37,7 @@ export async function generatePage(initialization: string, subject: string, temp
           plugins: [
             new HtmlWebpackPlugin({
               filename: 'index.html',
-              template: `${templatesPath}/${template}.hbs`,
+              template: templatePath,
               initialization: 'initialization.bundle.js',
               subject: `subject.bundle.js`,
               inject: false,

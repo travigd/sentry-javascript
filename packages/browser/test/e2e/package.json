@@ -11,7 +11,7 @@
     "install-browsers": "playwright install --with-deps",
     "pretest": "yarn install && yarn install-browsers",
     "test": "playwright test ./test --browser='all' --reporter='line'",
-    "posttest": "rimraf dist"
+    "posttest": "rimraf -g suites/**/dist"
   },
   "dependencies": {
     "@playwright/test": "v1.17.0-rc1",
