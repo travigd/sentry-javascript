@@ -20,6 +20,9 @@ export { ErrorBoundary, withErrorBoundary } from '@sentry/react';
 type GlobalWithDistDir = typeof global & { __rewriteFramesDistDir__: string };
 const domain = domainModule as typeof domainModule & { active: (domainModule.Domain & Carrier) | null };
 
+const isVercel = !!process.env.VERCEL;
+console.log({ isVercel });
+
 /** Inits the Sentry NextJS SDK on node. */
 export function init(options: NextjsOptions): void {
   if (options.debug) {
@@ -54,7 +57,7 @@ export function init(options: NextjsOptions): void {
 
   configureScope(scope => {
     scope.setTag('runtime', 'node');
-    if (process.env.VERCEL) {
+    if (isVercel) {
       scope.setTag('vercel', true);
     }
 
@@ -120,4 +123,8 @@ export { withSentryConfig } from './config';
 export { withSentry } from './utils/withSentry';
 
 // wrap various server methods to enable error monitoring and tracing
+// if (!isVercel) {
+//   instrumentServer();
+// }
+
 instrumentServer();
