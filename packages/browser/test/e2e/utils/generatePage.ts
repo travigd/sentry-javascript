@@ -1,20 +1,14 @@
 import { existsSync, mkdirSync } from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import path from 'path';
 import webpack from 'webpack';
 
 import webpackConfig from '../webpack.config';
 
-export async function generatePage(
-  initialization: string,
-  subject: string,
-  template: string,
-  outPath: string,
-): Promise<void> {
-  const localPath = `${path.resolve(__dirname, '..')}/${outPath}/dist`;
-  const initializationPath = `${path.resolve(__dirname, '..')}/${initialization}`;
-  const subjectPath = `${path.resolve(__dirname, '..')}/${subject}`;
-  const templatePath = `${path.resolve(__dirname, '..')}/${template}`;
+export async function generatePage(initialization: string, subject: string, template: string, outPath: string) {
+  const localPath = `${outPath}/dist`;
+  const initializationPath = `${initialization}`;
+  const subjectPath = `${subject}`;
+  const templatePath = `${template}`;
 
   const bundlePath = `${localPath}/index.html`;
 

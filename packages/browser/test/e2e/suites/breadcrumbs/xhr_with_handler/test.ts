@@ -1,9 +1,9 @@
 import { expect } from '@playwright/test';
 
-import test from '../../../utils/fixtures';
+import { sentryTest } from '../../../utils/fixtures';
 import { getSentryRequest } from '../../../utils/helpers';
 
-test('should record an XMLHttpRequest with a handler', async ({ getLocalTestPath, page }) => {
+sentryTest('should record an XMLHttpRequest with a handler', async ({ getLocalTestPath, page }) => {
   const url = await getLocalTestPath({ testDir: __dirname });
 
   const eventData = await getSentryRequest(page, url);
