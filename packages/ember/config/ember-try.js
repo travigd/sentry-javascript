@@ -14,9 +14,14 @@ module.exports = async function() {
   let scenarios = [
     {
       name: 'ember-release',
+      // npm: {
+      //   devDependencies: {
+      //     'ember-source': await getChannelURL('release'),
+      //   },
+      // },
       npm: {
-        devDependencies: {
-          'ember-source': await getChannelURL('release'),
+        ember: {
+          edition: 'classic',
         },
       },
     },
