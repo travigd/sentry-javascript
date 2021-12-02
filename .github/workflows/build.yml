@@ -96,7 +96,6 @@ jobs:
     needs: job_build
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    if: ${{ github.head_ref }}
     steps:
       - name: Check out current commit (${{ github.sha }})
         uses: actions/checkout@v2
@@ -115,10 +114,11 @@ jobs:
           path: ${{ env.CACHED_BUILD_PATHS }}
           key: ${{ env.BUILD_CACHE_KEY }}
       - name: Check bundle sizes
-        uses: andresz1/size-limit-action@v1.4.0
+        uses: getsentry/size-limit-action@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           skip_step: build
+          workflow_name: 'build'
 
   job_lint:
     name: Lint
@@ -231,17 +231,9 @@ jobs:
         with:
           path: ${{ env.CACHED_BUILD_PATHS }}
           key: ${{ env.BUILD_CACHE_KEY }}
-      - name: Check changed files
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v6.2
-        with:
-          files: .*packages\/ember($|/.*)
-      # Only run ember tests if the files above have changed
       - name: Run Ember tests
-        if: steps.changed-files-specific.outputs.any_changed == 'true' || github.event_name == 'push'
         run: yarn test --scope=@sentry/ember
       - name: Compute test coverage
-        if: steps.changed-files-specific.outputs.any_changed == 'true' || github.event_name == 'push'
         uses: codecov/codecov-action@v1
 
   job_artifacts:
