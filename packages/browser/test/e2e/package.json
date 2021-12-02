@@ -14,7 +14,7 @@
     "posttest": "rimraf -g suites/**/dist"
   },
   "dependencies": {
-    "@playwright/test": "v1.17.0-rc1",
+    "@playwright/test": "^1.17.0",
     "@sentry/browser": "file:../..",
     "babel-loader": "^8.2.2",
     "handlebars-loader": "^1.7.1",

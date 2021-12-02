@@ -20,7 +20,7 @@ async function runScriptInSandbox(page: Page, path: string): Promise<void> {
  * @return {*}  {Promise<Event>}
  */
 async function getSentryRequest(page: Page, url: string): Promise<Event> {
-  const request = (await Promise.all([page.goto(url), page.waitForRequest(/.*.sentry\.io\/api.*/gm)]))[1];
+  const request = (await Promise.all([page.goto(url), page.waitForRequest(/\.sentry\.io\/api\//)]))[1];
 
   return JSON.parse((request && request.postData()) || '');
 }
