@@ -3,6 +3,12 @@ import { expect } from '@playwright/test';
 import test from '../../../utils/fixtures';
 import { getSentryRequest } from '../../../utils/helpers';
 
+declare global {
+  interface Window {
+    handlerCalled: boolean;
+  }
+}
+
 test('should record an XMLHttpRequest with a handler attached after send was called', async ({
   page,
   getLocalTestPath,
@@ -15,7 +21,7 @@ test('should record an XMLHttpRequest with a handler attached after send was cal
 
   expect(handlerCalled).toBe(true);
   expect(eventData.message).toBe('test');
-  expect(eventData.breadcrumbs?.length).toBe(1);
+  expect(eventData.breadcrumbs).toHaveLength(1);
   expect(eventData.breadcrumbs?.[0].category).toBe('xhr');
   expect(eventData.breadcrumbs?.[0].type).toBe('http');
   expect(eventData.breadcrumbs?.[0].data?.method).toBe('GET');

@@ -9,7 +9,7 @@ test('should record an XMLHttpRequest with a handler', async ({ getLocalTestPath
   const eventData = await getSentryRequest(page, url);
 
   expect(eventData.message).toBe('test');
-  expect(eventData.breadcrumbs?.length).toBe(1);
+  expect(eventData.breadcrumbs).toHaveLength(1);
   expect(eventData.breadcrumbs?.[0].category).toBe('xhr');
   expect(eventData.breadcrumbs?.[0].type).toBe('http');
   expect(eventData.breadcrumbs?.[0].data?.method).toBe('GET');
