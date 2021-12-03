@@ -279,7 +279,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16'
-          fetch-depth: 0
       - name: Check dependency cache
         uses: actions/cache@v2
         with:
