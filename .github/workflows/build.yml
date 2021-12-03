@@ -293,7 +293,7 @@ jobs:
       - name: Run E2E tests
         run: |
           cd packages/browser
-          yarn test:e2e
+          yarn test:e2e:ci
 
   job_browserstack_test:
     name: BrowserStack

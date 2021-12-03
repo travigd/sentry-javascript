@@ -10,7 +10,8 @@
   "scripts": {
     "install-browsers": "playwright install --with-deps",
     "pretest": "yarn install && yarn install-browsers",
-    "test": "playwright test ./test --browser='all' --reporter='line'",
+    "test:ci": "yarn pretest && playwright test ./suites --browser='all' --reporter='line'",
+    "test": "playwright test ./suites",
     "posttest": "rimraf -g suites/**/dist"
   },
   "dependencies": {
