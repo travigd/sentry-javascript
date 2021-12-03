@@ -18,7 +18,7 @@ export async function generatePage(initialization: string, subject: string, temp
 
   if (!existsSync(bundlePath)) {
     await new Promise<void>((resolve, reject) => {
-      webpack(
+      const compiler = webpack(
         webpackConfig({
           entry: {
             initialization: initializationPath,
@@ -38,14 +38,21 @@ export async function generatePage(initialization: string, subject: string, temp
             }),
           ],
         }),
-        err => {
+      );
+
+      compiler.run(err => {
+        if (err) {
+          reject(err);
+        }
+
+        compiler.close(err => {
           if (err) {
             reject(err);
           }
 
           resolve();
-        },
-      );
+        });
+      });
     });
   }
 }
