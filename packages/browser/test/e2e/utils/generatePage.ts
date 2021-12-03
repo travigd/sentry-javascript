@@ -38,13 +38,14 @@ export async function generatePage(initialization: string, subject: string, temp
             }),
           ],
         }),
-      ).run(err => {
-        if (err) {
-          reject(err);
-        }
+        err => {
+          if (err) {
+            reject(err);
+          }
 
-        resolve();
-      });
+          resolve();
+        },
+      );
     });
   }
 }
