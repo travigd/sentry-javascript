@@ -21,21 +21,22 @@ export type TestFixtures = {
 };
 
 const sentryTest = base.extend<TestFixtures>({
-  getLocalTestPath: ({}, use) => {
+  getLocalTestPath: ({}, use, testInfo) => {
     return use(async ({ testDir }) => {
-      return `file:///${path.resolve(testDir, './dist/index.html')}`;
+      const pagePath = `file:///${path.resolve(testDir, './dist/index.html')}`;
+
+      // Build test page if it doesn't exist
+      if (!fs.existsSync(pagePath)) {
+        const testDir = path.dirname(testInfo.file);
+        const subject = getAsset(testDir, 'subject.js');
+        const template = getAsset(testDir, 'template.hbs');
+        const init = getAsset(testDir, 'init.js');
+
+        await generatePage(init, subject, template, testDir);
+      }
+      return pagePath;
     });
   },
-});
-
-// Building Pages before each test
-sentryTest.beforeEach(async ({}, testInfo) => {
-  const testDir = path.dirname(testInfo.file);
-  const subject = getAsset(testDir, 'subject.js');
-  const template = getAsset(testDir, 'template.hbs');
-  const init = getAsset(testDir, 'init.js');
-
-  await generatePage(init, subject, template, testDir);
 });
 
 export { sentryTest };
