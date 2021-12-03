@@ -215,7 +215,19 @@ module.exports = {
     'max-lines': 'error',
 
     // We should require a whitespace beginning a comment
-    'spaced-comment': 'error',
+    'spaced-comment': [
+      'error',
+      {
+        line: {
+          // this lets us use triple-slash directives
+          markers: ['/'],
+        },
+        block: {
+          // comments of the form /* ..... */ should always have whitespace before the closing `*/` marker
+          balanced: true,
+        },
+      },
+    ],
 
     // Disallow usage of bitwise operators - this makes it an opt in operation
     'no-bitwise': 'error',
